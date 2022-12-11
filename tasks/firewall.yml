@@ -1,0 +1,64 @@
+- name: Install ufw
+  apt:
+    name: ufw
+    state: present
+
+- name: Open traffic to SSH port
+  ufw:
+    rule: allow
+    proto: tcp
+    port: ssh
+    state: reloaded
+
+- name: Open traffic to HTTP port
+  ufw:
+    rule: allow
+    proto: tcp
+    port: "80"
+    state: reloaded
+
+- name: Open traffic to HTTPS port
+  ufw:
+    rule: allow
+    proto: tcp
+    port: "443"
+    state: reloaded
+
+- name: Enable firewall
+  ufw:
+    policy: deny
+    direction: incoming
+    state: enabled
+
+- name: Allow access to node exporter from Prometheus host
+  ufw:
+    rule: allow
+    proto: tcp
+    from_ip: "{{ server_node_exporter_prometheus_host_ip }}"
+    to_ip: any
+    to_port: "{{ server_node_exporter_port }}"
+  notify:
+    - restart ufw
+
+- name: Allow access to node exporter from Docker containers
+  ufw:
+    rule: allow
+    proto: tcp
+    from_ip: "{{ item }}"
+    to_ip: any
+    to_port: "{{ server_node_exporter_port }}"
+  loop:
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+  notify:
+    - restart ufw
+
+- name: Allow access to pg exporter from Prometheus host
+  ufw:
+    rule: allow
+    proto: tcp
+    from_ip: "{{ server_node_exporter_prometheus_host_ip }}"
+    to_ip: any
+    to_port: "{{ server_pg_exporter_port }}"
+  notify:
+    - restart ufw

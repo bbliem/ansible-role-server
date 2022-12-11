@@ -1,0 +1,49 @@
+# TODO: Should not use apt but package
+- name: Install some useful packages
+  apt:
+    name:
+      - python-setuptools
+      - zsh
+    state: present
+    update_cache: yes
+
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Make sure we have a 'docker' group
+  group:
+    name: docker
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+# - name: Set up Wireguard network
+#   include_role:
+#     name: githubixx.ansible_role_wireguard
+#     apply:
+#       tags: wireguard
+#   tags: wireguard
+
+- name: Put private network hosts into /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }} # ansible$'
+    line: "{{ hostvars[item].private_network_ip }} {{ item }} # ansible"
+    state: present
+  when: hostvars[item].private_network_ip is defined
+  with_items: "{{ groups.all }}"
+  tags: hosts
+
+- include_tasks:
+    file: firewall.yml
+    apply:
+      tags: firewall
+  tags: firewall
