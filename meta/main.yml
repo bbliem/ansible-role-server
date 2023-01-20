@@ -1,43 +1,60 @@
 galaxy_info:
+  role_name: server
+  namespace: bbliem
   author: Bernhard Bliem
   description: Ansible role for setting up basic packages on an Ansible-managed server
   license: MIT
-  min_ansible_version: 2.9
+  min_ansible_version: "2.9"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+        - jammy
   galaxy_tags: []
-  dependencies:
-    - role: hifis.unattended_upgrades
-    - role: cloudalchemy.node_exporter
-      vars:
-        node_exporter_web_listen_address: "0.0.0.0:{{ server_node_exporter_port }}"
-    - role: geerlingguy.pip
-      vars:
-        pip_install_packages:
-          - docker
-          - docker-compose
-    - role: geerlingguy.docker
+
+dependencies:
+  - role: hifis.unattended_upgrades
+    version: v1.12.2
+  - role: cloudalchemy.node_exporter
+    version: 2.0.0
+    vars:
+      node_exporter_web_listen_address: "0.0.0.0:{{ server_node_exporter_port }}"
+  - role: geerlingguy.pip
+    version: 2.2.0
+    vars:
+      pip_install_packages:
+        - docker
+        - docker-compose
+  - role: geerlingguy.docker
+    version: 6.0.3
+    vars:
       docker_daemon_options:
         log-driver: journald
-    - role: dev-sec.os-hardening
-      vars:
-        os_auth_pw_min_age: 0
-        os_auth_pw_max_age: 99999
-        os_auth_retries: 10
-        os_auditd_enabled: false
-        sysctl_overwrite:
-          # Enable IPv4 traffic forwarding for docker, see https://galaxy.ansible.com/dev-sec/os-hardening
-          net.ipv4.ip_forward: 1
-          # Enable IPv6 because otherwise there would be an error trying to bring up eth0 on Hetzner servers, which define
-          # an IPv6 address in /etc/network/interfaces.d/50-cloud-init. (Alternatively, one could disable cloud-init's
-          # network configuration as suggested in that file.)
-          net.ipv6.conf.all.disable_ipv6: 0
-    - role: dev-sec.ssh-hardening
-      vars:
-        sftp_enabled: true
-        ssh_allow_tcp_forwarding: "yes"
-        ssh_max_auth_retries: 5
-        # Woraround due to https://github.com/dev-sec/ansible-collection-hardening/issues/500
-        ssh_kex:
-          - sntrup761x25519-sha512@openssh.com
-          - curve25519-sha256@libssh.org
-          - diffie-hellman-group-exchange-sha256
-    - role: weareinteractive.users
+  - role: dev-sec.os-hardening
+    version: 6.2.0
+    vars:
+      os_auth_pw_min_age: 0
+      os_auth_pw_max_age: 99999
+      os_auth_retries: 10
+      os_auditd_enabled: false
+      sysctl_overwrite:
+        # Enable IPv4 traffic forwarding for docker, see https://galaxy.ansible.com/dev-sec/os-hardening
+        net.ipv4.ip_forward: 1
+        # Enable IPv6 because otherwise there would be an error trying to bring up eth0 on Hetzner servers, which define
+        # an IPv6 address in /etc/network/interfaces.d/50-cloud-init. (Alternatively, one could disable cloud-init's
+        # network configuration as suggested in that file.)
+        net.ipv6.conf.all.disable_ipv6: 0
+  - role: dev-sec.ssh-hardening
+    version: 9.7.0
+    vars:
+      sftp_enabled: true
+      ssh_allow_tcp_forwarding: "yes"
+      ssh_max_auth_retries: 5
+      # Woraround due to https://github.com/dev-sec/ansible-collection-hardening/issues/500
+      ssh_kex:
+        - sntrup761x25519-sha512@openssh.com
+        - curve25519-sha256@libssh.org
+        - diffie-hellman-group-exchange-sha256
+  - role: weareinteractive.users
+    version: 1.17.0
