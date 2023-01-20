@@ -1,24 +1,24 @@
 # TODO: Should not use apt but package
 - name: Install some useful packages
-  apt:
+  ansible.builtin.apt:
     name:
       - python-setuptools
       - zsh
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Make sure we have a 'wheel' group
-  group:
+  ansible.builtin.group:
     name: wheel
     state: present
 
 - name: Make sure we have a 'docker' group
-  group:
+  ansible.builtin.group:
     name: docker
     state: present
 
 - name: Allow 'wheel' group to have passwordless sudo
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/sudoers
     state: present
     regexp: '^%wheel'
@@ -26,14 +26,14 @@
     validate: 'visudo -cf %s'
 
 # - name: Set up Wireguard network
-#   include_role:
+#   ansible.builtin.include_role:
 #     name: githubixx.ansible_role_wireguard
 #     apply:
 #       tags: wireguard
 #   tags: wireguard
 
 - name: Put private network hosts into /etc/hosts
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/hosts
     regexp: '.*{{ item }} # ansible$'
     line: "{{ hostvars[item].private_network_ip }} {{ item }} # ansible"
@@ -42,7 +42,8 @@
   with_items: "{{ groups.all }}"
   tags: hosts
 
-- include_tasks:
+- name: Set up firewall
+  ansible.builtin.include_tasks:
     file: firewall.yml
     apply:
       tags: firewall

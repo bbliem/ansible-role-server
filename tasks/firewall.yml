@@ -1,37 +1,37 @@
 - name: Install ufw
-  apt:
+  ansible.builtin.apt:
     name: ufw
     state: present
 
 - name: Open traffic to SSH port
-  ufw:
+  community.general.ufw:
     rule: allow
     proto: tcp
     port: ssh
     state: reloaded
 
 - name: Open traffic to HTTP port
-  ufw:
+  community.general.ufw:
     rule: allow
     proto: tcp
     port: "80"
     state: reloaded
 
 - name: Open traffic to HTTPS port
-  ufw:
+  community.general.ufw:
     rule: allow
     proto: tcp
     port: "443"
     state: reloaded
 
 - name: Enable firewall
-  ufw:
+  community.general.ufw:
     policy: deny
     direction: incoming
     state: enabled
 
 - name: Allow access to node exporter from Prometheus host
-  ufw:
+  community.general.ufw:
     rule: allow
     proto: tcp
     from_ip: "{{ server_node_exporter_prometheus_host_ip }}"
@@ -41,7 +41,7 @@
     - restart ufw
 
 - name: Allow access to node exporter from Docker containers
-  ufw:
+  community.general.ufw:
     rule: allow
     proto: tcp
     from_ip: "{{ item }}"
@@ -54,7 +54,7 @@
     - restart ufw
 
 - name: Allow access to pg exporter from Prometheus host
-  ufw:
+  community.general.ufw:
     rule: allow
     proto: tcp
     from_ip: "{{ server_node_exporter_prometheus_host_ip }}"
