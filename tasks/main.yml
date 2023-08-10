@@ -32,6 +32,15 @@
 #       tags: wireguard
 #   tags: wireguard
 
+- name: Install Prometheus Node Exporter
+  ansible.builtin.include_role:
+    name: prometheus.prometheus.node_exporter
+    apply:
+      tags: node-exporter
+  vars:
+    node_exporter_web_listen_address: "0.0.0.0:{{ server_node_exporter_port }}"
+  tags: node-exporter
+
 - name: Put private network hosts into /etc/hosts
   ansible.builtin.lineinfile:
     dest: /etc/hosts
