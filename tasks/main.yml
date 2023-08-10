@@ -48,3 +48,9 @@
     apply:
       tags: firewall
   tags: firewall
+
+# Changes to sshd config have been set up by hardening role in dependencies
+- name: Reload sshd config
+  ansible.builtin.service:
+    name: sshd
+    state: reloaded

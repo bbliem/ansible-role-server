@@ -38,6 +38,8 @@ dependencies:
       os_auth_pw_max_age: 99999
       os_auth_retries: 10
       os_auditd_enabled: false
+      ssh_print_motd: true
+      ssh_print_pam_motd: true
       sysctl_overwrite:
         # Enable IPv4 traffic forwarding for docker, see https://galaxy.ansible.com/dev-sec/os-hardening
         net.ipv4.ip_forward: 1
