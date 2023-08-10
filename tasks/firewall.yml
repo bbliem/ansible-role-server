@@ -38,7 +38,7 @@
     to_ip: any
     to_port: "{{ server_node_exporter_port }}"
   notify:
-    - restart ufw
+    - Restart ufw
 
 - name: Allow access to node exporter from Docker containers
   community.general.ufw:
@@ -51,7 +51,7 @@
     - 172.16.0.0/12
     - 192.168.0.0/16
   notify:
-    - restart ufw
+    - Restart ufw
 
 - name: Allow access to pg exporter from Prometheus host
   community.general.ufw:
@@ -61,4 +61,4 @@
     to_ip: any
     to_port: "{{ server_pg_exporter_port }}"
   notify:
-    - restart ufw
+    - Restart ufw
