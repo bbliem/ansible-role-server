@@ -1,7 +1,8 @@
 # TODO: Should not use apt but package
-- name: Install some useful packages
+- name: Install packages
   ansible.builtin.apt:
     name:
+      - acl  # needed for, e.g., using become_user to change from an unprivileged user to another unprivileged user
       - python-setuptools
       - zsh
     state: present
