@@ -34,8 +34,6 @@ dependencies:
       os_auth_pw_max_age: 99999
       os_auth_retries: 10
       os_auditd_enabled: false
-      ssh_print_motd: true
-      ssh_print_pam_motd: true
       sysctl_overwrite:
         # Enable IPv4 traffic forwarding for docker, see https://galaxy.ansible.com/dev-sec/os-hardening
         net.ipv4.ip_forward: 1
@@ -49,6 +47,8 @@ dependencies:
       sftp_enabled: true
       ssh_allow_tcp_forwarding: "yes"
       ssh_max_auth_retries: 5
+      ssh_print_motd: true
+      ssh_print_pam_motd: true
       # Woraround due to https://github.com/dev-sec/ansible-collection-hardening/issues/500
       ssh_kex:
         - sntrup761x25519-sha512@openssh.com
