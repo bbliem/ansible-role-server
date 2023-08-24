@@ -7,3 +7,4 @@ Ansible role for setting up basic packages on an Ansible-managed server
 - `server_node_exporter_port` [required]
 - `server_node_exporter_prometheus_host_ip` [required]
 - `server_pg_exporter_port` [required]
+- `server_ssh_port` [default: `ssh` (alias for 22)]

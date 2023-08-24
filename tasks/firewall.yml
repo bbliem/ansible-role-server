@@ -7,7 +7,7 @@
   community.general.ufw:
     rule: allow
     proto: tcp
-    port: ssh
+    port: "{{ server_ssh_port }}"
     state: reloaded
 
 - name: Open traffic to HTTP port
