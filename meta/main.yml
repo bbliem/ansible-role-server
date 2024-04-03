@@ -13,22 +13,25 @@ galaxy_info:
         - jammy
   galaxy_tags: []
 
+collections:
+  - devsec.hardening
+
 dependencies:
-  - role: hifis.unattended_upgrades
-    version: v3.1.0
+  - role: hifis.unattended-upgrades
+    version: v3.3.0
   - role: geerlingguy.pip
-    version: 2.2.0
+    version: 3.0.3
     vars:
       pip_install_packages:
         - docker
         - docker-compose
   - role: geerlingguy.docker
-    version: 6.1.0
+    version: 7.1.0
     vars:
       docker_daemon_options:
         log-driver: journald
-  - role: dev-sec.os-hardening
-    version: 6.2.0
+  - role: devsec.hardening.os_hardening
+    version: 9.0.1
     vars:
       os_auth_pw_min_age: 0
       os_auth_pw_max_age: 99999
@@ -41,18 +44,13 @@ dependencies:
         # an IPv6 address in /etc/network/interfaces.d/50-cloud-init. (Alternatively, one could disable cloud-init's
         # network configuration as suggested in that file.)
         net.ipv6.conf.all.disable_ipv6: 0
-  - role: dev-sec.ssh-hardening
-    version: 9.7.0
+  - role: devsec.hardening.ssh_hardening
+    version: 9.0.1
     vars:
       sftp_enabled: true
       ssh_allow_tcp_forwarding: "yes"
       ssh_max_auth_retries: 5
       ssh_print_motd: true
       ssh_print_pam_motd: true
-      # Woraround due to https://github.com/dev-sec/ansible-collection-hardening/issues/500
-      ssh_kex:
-        - sntrup761x25519-sha512@openssh.com
-        - curve25519-sha256@libssh.org
-        - diffie-hellman-group-exchange-sha256
   - role: weareinteractive.users
-    version: 1.17.0
+    version: 1.18.0
