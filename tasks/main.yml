@@ -34,6 +34,11 @@
     state: present
     update_cache: true
 
+- name: Install mailx for sending emails concerning unattended updates
+  ansible.builtin.package:
+    name: bsd-mailx
+  when: unattended_mail
+
 - name: Make sure we have a 'wheel' group
   ansible.builtin.group:
     name: wheel
