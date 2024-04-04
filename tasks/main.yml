@@ -1,3 +1,29 @@
+- name: Run os_hardening role
+  ansible.builtin.include_role:
+    name: devsec.hardening.os_hardening
+  vars:
+    os_auth_pw_min_age: 0
+    os_auth_pw_max_age: 99999
+    os_auth_retries: 10
+    os_auditd_enabled: false
+    sysctl_overwrite:
+      # Enable IPv4 traffic forwarding for docker, see https://galaxy.ansible.com/dev-sec/os-hardening
+      net.ipv4.ip_forward: 1
+      # Enable IPv6 because otherwise there would be an error trying to bring up eth0 on Hetzner servers, which define
+      # an IPv6 address in /etc/network/interfaces.d/50-cloud-init. (Alternatively, one could disable cloud-init's
+      # network configuration as suggested in that file.)
+      net.ipv6.conf.all.disable_ipv6: 0
+
+- name: Run ssh_hardening role
+  ansible.builtin.include_role:
+    name: devsec.hardening.ssh_hardening
+  vars:
+    sftp_enabled: true
+    ssh_allow_tcp_forwarding: "yes"
+    ssh_max_auth_retries: 5
+    ssh_print_motd: true
+    ssh_print_pam_motd: true
+
 # TODO: Should not use apt but package
 - name: Install packages
   ansible.builtin.apt:
@@ -58,9 +84,3 @@
     apply:
       tags: firewall
   tags: firewall
-
-# Changes to sshd config have been set up by hardening role in dependencies
-- name: Reload sshd config
-  ansible.builtin.service:
-    name: sshd
-    state: reloaded
