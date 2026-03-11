@@ -1,3 +1,11 @@
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - server_node_exporter_port is defined
+      - server_node_exporter_prometheus_host_ip is defined
+      - server_pg_exporter_port is defined
+    fail_msg: "Required variable is not defined. Please set server_node_exporter_port, server_node_exporter_prometheus_host_ip, and server_pg_exporter_port."
+
 - name: Run os_hardening role
   ansible.builtin.include_role:
     name: devsec.hardening.os_hardening
@@ -24,15 +32,18 @@
     ssh_print_motd: true
     ssh_print_pam_motd: true
 
-# TODO: Should not use apt but package
-- name: Install packages
+- name: Update apt cache
   ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install packages
+  ansible.builtin.package:
     name:
       - acl  # needed for, e.g., using become_user to change from an unprivileged user to another unprivileged user
-      - python-setuptools
+      - python3-setuptools
       - zsh
     state: present
-    update_cache: true
 
 - name: Install mailx for sending emails concerning unattended updates
   ansible.builtin.package:
@@ -56,6 +67,7 @@
     regexp: '^%wheel'
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
     validate: 'visudo -cf %s'
+  when: server_passwordless_sudo
 
 # - name: Set up Wireguard network
 #   ansible.builtin.include_role:
@@ -80,7 +92,7 @@
     line: "{{ hostvars[item].private_network_ip }} {{ item }} # ansible"
     state: present
   when: hostvars[item].private_network_ip is defined
-  with_items: "{{ groups.all }}"
+  loop: "{{ groups['all'] }}"
   tags: hosts
 
 - name: Set up firewall

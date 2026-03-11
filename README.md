@@ -29,3 +29,5 @@ dependencies with `ansible-galaxy install -r requirements.yml --force-with-deps`
 - `server_node_exporter_prometheus_host_ip` [required]
 - `server_pg_exporter_port` [required]
 - `server_ssh_port` [default: `ssh` (alias for 22)]
+- `unattended_mail` [default: `false`]: set to an email address to receive notifications about unattended upgrades
+- `server_passwordless_sudo` [default: `true`]: grant the `wheel` group passwordless sudo. Disable if you want sudo to prompt for a password (note: SSH interactive authentication must then be available).

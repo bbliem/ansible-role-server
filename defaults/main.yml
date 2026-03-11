@@ -1,1 +1,3 @@
 server_ssh_port: ssh
+unattended_mail: false
+server_passwordless_sudo: true

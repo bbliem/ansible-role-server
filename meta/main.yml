@@ -4,7 +4,7 @@ galaxy_info:
   author: Bernhard Bliem
   description: Ansible role for setting up basic packages on an Ansible-managed server
   license: MIT
-  min_ansible_version: "2.9"
+  min_ansible_version: "2.10"
   platforms:
     - name: Ubuntu
       versions:
@@ -17,13 +17,13 @@ dependencies:
   - role: hifis.unattended-upgrades
     version: v3.3.0
   - role: geerlingguy.pip
-    version: 3.0.3
+    version: 3.1.2
     vars:
       pip_install_packages:
         - docker
         - docker-compose
   - role: geerlingguy.docker
-    version: 7.1.0
+    version: 8.0.0
     vars:
       docker_daemon_options:
         log-driver: journald
